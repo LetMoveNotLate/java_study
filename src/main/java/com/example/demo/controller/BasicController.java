@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 import com.example.demo.data.entity.ListEntitiy;
 import com.example.demo.data.repository.ListRepository;
+import com.example.demo.service.TodoList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,21 +14,30 @@ public class BasicController {
     @Autowired
     ListRepository listRepository;
 
+    @Autowired
+    TodoList todoList;
+
     @CrossOrigin("*")
     @PutMapping("/saveList")
-    public String saveList(@RequestBody Map<String, Object> list) {
-        ListEntitiy listOfEntity = new ListEntitiy();
-        listOfEntity.setContent(list.get("newContent").toString());
+    public String saveList(@RequestBody Map<String, Object> item) {
 
-        listRepository.save(listOfEntity);
+        todoList.setTodoList(item);
 
         return "success";
     }
 
     @CrossOrigin("*")
-    @PutMapping("/getList")
-    public List<ListEntitiy> getList(@RequestBody Map<String, Object> list) {
+    @GetMapping("/getList")
+    public List<ListEntitiy> getList() {
 
-        return listRepository.findAll();
+        return todoList.getTodoList();
+    }
+
+    @CrossOrigin("*")
+    @DeleteMapping("/deleteItem")
+    public String deleteItem(@RequestBody Map<String, Object> list) {
+        todoList.deleteTodoList(list);
+        String status = "200";
+        return status;
     }
 }
